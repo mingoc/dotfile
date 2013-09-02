@@ -1,0 +1,95 @@
+#alias ls='ls --color --show-control-chars --time-style=long-iso' 
+#export LC_ALL=zh_CN.UTF-8
+
+#export LANG="zh_CN.GBK" 
+#export OUTPUT_CHARSET="GBK" 
+export PATH=.:${PATH}:$HOME/bin:/var/lib/gems/1.8/bin:/home/mingo/androidsdk/android-sdk-linux/platform-tools:${home}/bin/briss-0.9:~/software/youku-lixian
+alias ips='cat /etc/hosts|grep'
+alias d='cd /d'
+alias tosite1bam='ssh -f -N -L 40000:10.26.12.40:3389  root@site1usm'
+alias tosite1log='ssh -f -N -L 40032:10.26.12.32:3389  root@site1usm'
+alias tosite2bam='ssh -f -N -L 40001:10.26.3.70:3389  root@site2usm'
+alias ngin='cd /cygdrive/d/ngin-spain'
+#alias note="/cygdrive/d/p/Notepad++/notepad++.exe"
+alias toenglishstuff='ssh -f -2 -D777 cxmtime@174.120.139.170 -N'
+alias tosite2vcs='ssh -f -N -L 14141:10.26.3.62:14141  root@site2usm'
+alias tosite1disk1='ssh -f -N -L 30000:10.26.12.10:22  root@site1usm'
+alias tosite1disk2='ssh -f -N -L 30001:10.26.12.12:22  root@site1usm'
+alias tosite2disk1='ssh -f -N -L 30002:10.26.3.51:22   root@site2usm'
+alias tosite3disk1='ssh -f -N -L 30003:10.26.18.46:22  root@site3usm'
+alias tosite3disk2='ssh -f -N -L 30004:10.26.18.48:22  root@site3usm'
+alias tosite4disk1='ssh -f -N -L 30005:10.26.22.12:22  root@site4usm'
+alias tosite3bam='ssh -f -N -L 40003:10.26.18.78:3389  root@site3usm'
+alias tosite3log='ssh -f -N -L 40013:10.26.18.74:3389  root@site3usm'
+alias tosite4bam='ssh -f -N -L 40004:10.26.22.28:3389  root@site4usm'
+alias s='source ~/.cxm'
+alias vdfusm='ssh root@10.18.126.27'
+alias sshenglishstuff='ssh  cxmtime@174.120.139.170'
+alias l='ls -alFh'
+alias lh='ls -alt|head'
+alias es='cd /cygdrive/d/python/EnglishStuff.org/englishstuff'
+alias esn='cd /home/cxmtime/webapps/django/englishstuff'
+
+alias toenglishstuff-R='ssh -nNT -R 1100:10.26.22.19:22 cxmtime@englishstuff.org'
+alias sshtango='ssh -p 443 -C mingo@62.14.247.21'
+alias to-tango='ssh -g -L 33333:10.230.64.254:33333   mingo@62.14.247.19 -p 443'
+alias sshtlf='ssh t647365@10.230.64.254'
+alias proxytango='ssh -f -2 -D777 mingo@62.14.247.21 -N -p 443'
+#cygstart
+alias o='nautilus . '
+alias oo='gnome-open .'
+alias sshbox='ssh mingo@127.0.0.1 -p 2222'
+alias httpServer='python -m SimpleHTTPServer'
+alias j='cd /d/testjnetx'
+alias me='vi ~/.ssh/known_hosts'
+alias sshhost='vi /home/c40920/.ssh/known_hosts'
+alias h='history'
+alias viconf='vi ~/.ssh/config'
+alias tun-com='tunnel.py i2k1:22 33331 &'
+alias tun-app='tunnel.py i2kapp1:3389 40005 &'
+alias tun-tb='tunnel.py tb1usm:22 44447 &'
+alias tun-tb-app1='tunnel.py tb2app1:3389 50001 &'
+alias tun-tb-app2='tunnel.py tb2app2:3389 50002 &'
+alias tun-tb-pc='tunnel.py 192.168.75.139:3389 50003 &'
+alias nginbox='ssh ngin@nginbox'
+alias g='gvim'
+alias jx1='rsync.exe -aP jnetx@dujsee1:./runtime/1.1/slee/etc/ /cygdrive/d/test/jsee1'
+alias getcap='scp root@ducsee2:./1.cap ./'
+alias getfep='scp root@ducsee2:./fep.cap ./'
+alias e='emacsclient -t '
+h2d(){
+  echo "ibase=16; $@"|bc
+}
+d2h(){
+  echo "obase=16; $@"|bc
+}
+
+alias dnslab='sudo cp /etc/resolv.conf.lab /etc/resolv.conf'
+alias dnshome='sudo cp /etc/resolv.conf.home /etc/resolv.conf'
+alias tun-i2kusm='tunnel.py i2kusm:22 22333 &'
+alias tun-i2k1='tunnel.py i2k1:22 22221 &'
+
+alias ml='mlnet > /dev/null 2>&1 & '
+alias cdml='cd ~/.mldonkey/incoming/files/'
+alias win='VBoxManage startvm WinXP'
+alias winoff='VBoxManage controlvm WinXP poweroff'
+alias proxycn='autossh -M 17777 -NfD 8888 cxmtime@samhone.com'
+alias briss='java -jar ${HOME}/bin/briss-0.9/briss-0.9.jar'
+alias dl='cd ~/Downloads'
+alias es='emacs -nw'
+alias o2='sudo vpnc  /etc/vpnc/o2vpn.conf'
+alias o2dc='sudo vpnc-disconnect'
+
+alias lx='~/software/xunlei-lixian/lixian_cli.py'
+alias e='emacsclient'
+alias veryzdm_pull='rsync -aP vr:webapps/mezblog /home/mingo/dev/webfaction/'
+alias veryzdm_push='rsync -aP --exclude='/home/mingo/dev/webfaction/mezblog/myproject/myproject/dev.db'  /home/mingo/dev/webfaction/mezblog/myproject/myproject/  vr:webapps/mezblog/myproject/myproject/'
+alias veryzdm_pushimage='rsync ~/Public/* vr:/home/cxmtime/webapps/mezblog/myproject/myproject/static/media/uploads/'
+alias youdl='~/software/youtube-dl/youtube-dl'
+alias youget='~/software/you-get/you-get'
+
+export WORKON_HOME=$HOME/.virtualenvs 
+source /usr/local/bin/virtualenvwrapper.sh 
+export PIP_VIRTUALENV_BASE=$WORKON_HOME
+alias t-101='ssh o2 -NfL 8000:me:8000'
+alias any='cd ~/py/anylife; source venv/bin/activate'
