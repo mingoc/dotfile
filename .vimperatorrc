@@ -1,0 +1,10 @@
+"3.5 (created: 2012/08/04 00:41:20)
+
+map h gT
+map l gt
+set hintchars=hjklasdfgyuiopqwertnmzxcvb
+set "nextpattern=s*下一页|下一张|下一篇|下页|后页s*,^bnextb,\\bnext\\b,^>$,^(>>|»)$,^(>|»),(>|»)$,\\bmore\\b"
+set "previouspattern=s*上一页|上一张|上一篇|上页|前页|返回列表s*,^bprev|previousb,\\bprev|previous\\b,^<$,^(<<|«)$,^(<|«),(<|«)$"
+source! /home/mingo/.vimperatorrc.local
+
+" vim: set ft=vimperator:
