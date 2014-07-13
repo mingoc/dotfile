@@ -1,0 +1,423 @@
+
+(add-to-list 'load-path "~/.emacs.d/el-get/el-get")
+(add-to-list 'load-path "~/.emacs.d/expand-region.el")
+
+
+
+(unless (require 'el-get nil 'noerror)
+  (with-current-buffer
+      (url-retrieve-synchronously
+       "https://raw.github.com/dimitri/el-get/master/el-get-install.el")
+    (let (el-get-master-branch)
+      (goto-char (point-max))
+      (eval-print-last-sexp))))
+
+(el-get 'sync)
+
+
+
+(add-to-list 'load-path "~/.emacs.d")    ; This may not be appeared if you have already added.
+
+ (setq make-backup-files nil) 
+
+(prefer-coding-system 'utf-8)
+
+
+(add-to-list 'load-path "~/.emacs.d/Enhanced-Ruby-Mode") ; must be added after any path containing old ruby-mode
+(autoload 'enh-ruby-mode "enh-ruby-mode" "Major mode for ruby files" t)
+(add-to-list 'auto-mode-alist '("\\.rb$" . enh-ruby-mode))
+(add-to-list 'interpreter-mode-alist '("ruby" . enh-ruby-mode))
+
+ (eval-after-load 'enh-ruby-mode
+                     '(define-key enh-ruby-mode-map (kbd "C-c n") 'enh-ruby-end-of-block))
+ (eval-after-load 'enh-ruby-mode
+                     '(define-key enh-ruby-mode-map (kbd "C-c p") 'enh-ruby-beginning-of-block))
+
+
+
+;(add-to-list 'load-path "~/.emacs.d/inf-ruby") ; 
+;(autoload 'inf-ruby-minor-mode "inf-ruby" "Run an inferior Ruby process" t)
+;(add-hook 'enh-ruby-mode-hook 'inf-ruby-minor-mode)
+
+;;;--------magit-----------
+(add-to-list 'load-path "~/.emacs.d/vendor/git-modes-0.15.0")
+(add-to-list 'load-path "~/.emacs.d/vendor/magit")
+(eval-after-load 'info
+  '(progn (info-initialize)
+          (add-to-list 'Info-directory-list "~/.emacs.d/vendor/magit")))
+(require 'magit)
+
+(global-set-key (kbd "C-c g") 'magit-status)
+
+
+;; ------------------- jedi -----------------------------------------------------
+;(setq jedi:setup-keys t)
+;(add-hook 'python-mode-hook 'jedi:setup)
+
+;;----------------- python.el -----------------------------------------------------
+;(add-to-list 'load-path "~/.emacs.d/python.el") 
+;(require 'python)
+
+;;;;----------yas snippet------------------------------------------------------
+(add-to-list 'load-path "~/.emacs.d/plugins/yasnippet") 
+(require 'yasnippet)
+
+(setq yas-snippet-dirs
+      '("~/.emacs.d/snippets"            ;; personal snippets
+        "~/.emacs.d/plugins/yasnippet/snippets"    ;; the default collection
+        ))
+
+(yas-global-mode 1) ;; or M-x yas-reload-all if you've started YASnippet already.
+;;;;;;--------- setup  pylookup  ------------------------------------- 
+
+;; add pylookup to your loadpath, ex) ~/.emacs.d/pylookup
+;(setq pylookup-dir "~/pylookup")
+;(add-to-list 'load-path pylookup-dir)
+
+;; load pylookup when compile time
+;(eval-when-compile (require 'pylookup))
+
+;; set executable file and db file
+;(setq pylookup-program (concat pylookup-dir "/pylookup.py"))
+;(setq pylookup-db-file (concat pylookup-dir "/pylookup.db"))
+
+;; set search option if you want
+;; (setq pylookup-search-options '("--insensitive" "0" "--desc" "0"))
+
+;; to speedup, just load it on demand
+;(autoload 'pylookup-lookup "pylookup"
+;  "Lookup SEARCH-TERM in the Python HTML indexes." t)
+
+;(autoload 'pylookup-update "pylookup" 
+;  "Run pylookup-update and create the database at `pylookup-db-file'." t)
+
+
+;(global-set-key "\C-ch" 'pylookup-lookup)
+;;;;;;--------- setup  pylookup  end --------------------- ;;;;;;
+
+;;;;;;----------settup org2blog --------------------------------
+(setq org2blog/wp-blog-alist
+       '(("wordpress"
+          :url "http://cxmyes.wordpress.com/xmlrpc.php"
+          :username "cxmtime"
+          :default-title "Hello World"
+          :default-categories ("org2blog" "emacs")
+          :tags-as-categories nil)
+         ("my-blog"
+          :url "http://username.server.com/xmlrpc.php"
+          :username "admin")))
+
+;;;;;;;;;-----------------------------------------------------------
+
+
+(setq org-agenda-files '("~/org"))
+
+
+;;;;;;;; take a screenshot to org --------------------------------------------------------------------------
+ (defun org-screenshot ()
+  "Take a screenshot into a time stamped unique-named file in the same directory as the org-buffer and insert a link to this file."
+  (interactive)
+  (setq tilde-buffer-filename
+	(replace-regexp-in-string "/" "\\" (buffer-file-name) t t))
+  (setq filename
+	(concat
+	 (make-temp-name
+	  (concat "d:\\emacs\\images\\"
+		  "_"
+		  (format-time-string "%Y%m%d_%H%M%S_")) ) ".png"))
+  ;; Linux: ImageMagick: (call-process "import" nil nil nil filename)
+  ;; Windows: Irfanview
+  (call-process "d:\\P\\IrfanView\\i_view32.exe" nil nil nil (concat "/clippaste /convert=" filename))
+  (insert (concat "[[file:" filename "]]"))
+  (org-display-inline-images))
+  ; open jpg files in external app
+  (add-hook 'org-mode-hook
+      '(lambda ()
+             (setq org-file-apps
+                   (append '(
+                             ("\\.png\\'" . default)
+                             ) org-file-apps ))))
+
+
+
+(global-set-key (kbd "C-c y") 'org-screenshot)
+;;;;;;;;-----------------------------------------------------------------------------------------------------
+
+;;;;;;;;------------ org setting ----------------------------------------------------------------------------
+
+;(setq org-capture-templates
+;      '(("t" "Todo" entry (file+headline "~/org/gtd.org" "Tasks")
+;            "* TODO %?\n  %i\n  %a")
+;        ("j" "Journal" entry (file+datetree "~/org/journal.org")
+;             "* %?\nEntered on %U\n  %i\n  %a")))
+
+
+
+(setq org-capture-templates
+'(
+
+("n" "Note of work" entry (file "~/org/noteswork.org")
+  "* \n Entered on %T\n"  :prepend t)
+("N" "Note of Life" entry (file "~/org/noteslife.org")
+  "* \n Entered on %T\n" :prepend t)
+("t" "Todo of work" entry (file+headline "~/org/gtdwork.org" "Tasks")
+  "* TODO %?\n Entered on %T\n" :prepend t)
+("T" "Todo of life" entry (file+headline "~/org/gtdlife.org" "Tasks")
+  "* TODO %?\n Entered on %T\n" :prepend t)
+("o" "Operation log" entry (file "~/org/oplog.org")
+"* \n Entered on %T\n" :prepend t)
+("l" "Life log" entry (file "~/org/lifglog.org")
+"* %^g\n Entered on %T\n" :prepend t)
+("m" "meeting" entry (file "~/org/meeting.org")
+"* \n Entered on %T\n" :prepend t)
+))
+
+(global-set-key (kbd "<f12>") 'org-capture)
+
+(setq org-default-notes-filed "~/org/defaultnote.org" )
+
+
+;;;;;;org 自动缩进--------
+(add-hook 'org-mode-hook
+       (lambda ()
+       (org-indent-mode t))
+              t)
+;;-------------------------
+
+(add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
+(add-to-list 'auto-mode-alist '("\\.notes$" . org-mode))
+
+;;;;;;;-------------------------------------------------------------------------------------------------------
+
+(require 'deft)
+(setq deft-directory "~/org")
+(setq deft-extension "org")
+(setq deft-text-mode 'org-mode)
+(setq deft-use-filename-as-title t)
+(global-set-key [f8] 'deft)
+
+;;;;;;;-----;copy-region if region selected; else copy-line-----------------------------------------------
+
+(defun copy-line-or-region (beg end) 
+ "copy region if active only or copy line normally"
+  (interactive "r")
+  (if (region-active-p)
+      (call-interactively 'kill-ring-save)
+    (call-interactively 'copy-line)))
+
+(global-set-key (kbd "M-w") 'copy-line-or-region)
+;;;;;;----------------------------------------------------------------------------------------------------------
+;;;;;;;;;;;---- kill-other-buffers  ------------
+(defun kill-other-buffers ()
+      "Kill all other buffers."
+      (interactive)
+      (mapc 'kill-buffer (delq (current-buffer) (buffer-list))))
+
+
+;;;-----------------------------------------------------------------
+;;;;;;;;;;;;;;;;;;;;kill-region if region selected; else kill-backwad---------------------------
+(defun kill-backward-or-region (beg end) 
+ "kill region if active only or kill line normally"
+  (interactive "r")
+  (if (region-active-p)
+      (call-interactively 'kill-region)
+    (call-interactively 'backward-kill-word)))
+
+(global-set-key (kbd "C-w") 'kill-backward-or-region)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+(autoload 'markdown-mode "markdown-mode"
+   "Major mode for editing Markdown files" t)
+(add-to-list 'auto-mode-alist '("\\.text\\'" . markdown-mode))
+(add-to-list 'auto-mode-alist '("\\.markdown\\'" . markdown-mode))
+(add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode))
+(add-to-list 'auto-mode-alist '("\\.page\\'" . markdown-mode))
+
+
+;;;;;;;;;;;;;;;coy-line and copy word ------------------------------------------------------------
+(defun copy-line (&optional arg)
+ "Save current line into Kill-Ring without mark the line"
+ (interactive "P")
+ (let ((beg (line-beginning-position)) 
+	(end (line-end-position arg)))
+ (copy-region-as-kill beg end))
+)
+
+
+(defun copy-word (&optional arg)
+ "Copy words at point"
+ (interactive "P")
+ (let ((beg (progn (if (looking-back "[a-zA-Z0-9]" 1) (backward-word 1)) (point))) 
+	(end (progn (forward-word arg) (point))))
+ (copy-region-as-kill beg end))
+)
+;;;;;;;;--------------------------------------------------------------------------------------------
+
+(defun copy-rectangle-to-clipboard (p1 p2)
+  "Copy region as column (rectangle) to operating system's clipboard.
+This command will also put the text in register 0. (see: `copy-to-register')"
+  (interactive "r")
+  (let ((x-select-enable-clipboard t))
+    (copy-rectangle-to-register ?0 p1 p2)
+    (kill-new
+     (with-temp-buffer
+       (insert-register ?0)
+       (buffer-string) )) ) )
+
+(global-set-key "\C-xrc" 'copy-rectangle-to-clipboard)
+
+
+;;;;
+
+(global-set-key (kbd "<f5>") 'call-last-kbd-macro)
+
+;;;;;;;;;;;-----------------ido---------------------------------------------------------------
+(setq ido-enable-flex-matching t)
+  (setq ido-everywhere t)
+(ido-mode 1)
+;;;;;;;;;;------------------------------------------------------------------------------------
+;;;;;;;;; setup utf-8 ------------------------------------------------------------------------
+(set-language-environment 'utf-8)
+(prefer-coding-system       'utf-8)
+(set-default-coding-systems 'utf-8)
+(set-terminal-coding-system 'utf-8)
+(set-keyboard-coding-system 'utf-8)
+;; This from a japanese individual.  I hope it works.
+(setq default-buffer-file-coding-system 'utf-8)
+;; From Emacs wiki
+(setq x-select-request-type '(UTF8_STRING COMPOUND_TEXT TEXT STRING))
+;; MS Windows clipboard is UTF-16LE 
+;(set-clipboard-coding-system 'utf-16le-dos)
+
+;;;;;;;;;;; Settup English Font and Chinese Font ---------------------------------------------
+;; Setting English Font
+;(set-face-attribute
+;  'default nil :font "Consolas 10")
+   
+ ;; Chinese Font
+; (dolist (charset '(kana han symbol cjk-misc bopomofo))
+;        (set-fontset-font (frame-parameter nil 'font)
+;                             charset
+ ;                            (font-spec :family "Microsoft Yahei" :size 13)))
+;;set font family
+;
+
+;;;-------------ibuffer mode ---------------------------------------
+
+
+(require 'ibuffer)
+(global-set-key (kbd "C-x C-b") 'ibuffer-other-window)
+
+(setq ibuffer-default-sorting-mode 'major-mode)
+
+
+;;;-------------------Kill buffer with prompted--------------------------
+
+(global-set-key (kbd "C-x k") 
+        '(lambda () (interactive) 
+           (let (kill-buffer-query-functions) (kill-buffer))))
+
+;;;;;;;;;;;------MISC -------------------------------------------------------------------------
+(require 'php-mode)
+(require 'recentf)
+(recentf-mode 1)
+(global-set-key "\C-x\ \C-r" 'recentf-open-files)
+
+(global-set-key (kbd "C-o") 'ido-switch-buffer) ;
+
+
+;;  set tab
+(setq-default indent-tabs-mode nil)
+(setq-default tab-width 4)
+(setq indent-line-function 'insert-tab)
+
+
+;; make cursor movement keys under right hand's home-row.
+;(global-set-key (kbd "C-h") 'backward-char) ; was indent-new-comment-line
+(global-set-key (kbd "C-h") 'backward-char) ; was indent-new-comment-line
+(global-set-key (kbd "C-l") 'forward-char)  ; was downcase-word
+(global-set-key (kbd "M-l") 'forward-char)  ; was downcase-word
+(global-set-key (kbd "M-k") 'previous-line) ; was tab-to-tab-stop
+(global-set-key (kbd "M-j") 'next-line) ; was kill-sentence
+(global-set-key (kbd "C-x C-a") 'beginning-of-buffer) ; 
+;;(global-set-key (kbd "C-x C-e") 'end-of-buffer) ; 
+
+
+(global-set-key (kbd "M-SPC") 'set-mark-command) ; was just-one-space
+;(global-set-key (kbd "M-a") 'execute-extended-command) ; was backward-sentence
+;(global-set-key (kbd "<f5>") 'execute-extended-command)
+(global-set-key (kbd "<f6>") 'viper-mode)
+
+(global-set-key [f3] 'occur)
+
+
+(global-set-key (kbd "\C-xw") 'toggle-truncate-lines)
+ 
+
+
+(define-key global-map "\C-cl" 'org-store-link)
+(define-key global-map "\C-ca" 'org-agenda)
+(setq org-log-done t)
+(define-key global-map "\C-cc" 'org-remember)
+(define-key global-map "\C-xt" 'artist-mode)
+;;Font size
+(define-key global-map (kbd "C-+") 'text-scale-increase)
+(define-key global-map (kbd "C--") 'text-scale-decrease)
+;;Move around wndows
+(windmove-default-keybindings) ;; Shift+direction
+(global-set-key (kbd "C-x O") (lambda () (interactive) (other-window -1))) ;; back one
+(global-set-key (kbd "C-x C-o") (lambda () (interactive) (other-window 2))) ;; forward two
+
+;;; setup tramp
+(require 'tramp)
+(setq tramp-default-method "ssh")
+
+(server-start)
+
+;;----------------------
+
+(require 'expand-region)
+(global-set-key (kbd "C-=") 'er/expand-region)
+
+
+
+;;;;;;;;;;;--------------------------------------------------------------------------------------
+
+(defun todo () 
+      (interactive) 
+      (find-file "~/org/todo.org") 
+ )
+(defun note () 
+    (interactive) 
+      (find-file "~/org/notes.org") 
+ )
+(defun mingo () 
+    (interactive) 
+      (find-file "~/org/lisp/mingo.el") 67
+ )
+(defun gtd () 
+    (interactive) 
+      (find-file "~/org/gtd.org") 
+ )
+
+(defun site () 
+    (interactive) 
+      (find-file "~/org/sites.org") 
+ )
+
+(defun djan () 
+    (interactive) 
+      (find-file "~/org/djan.org") 
+ )
+
+
+(defun me () 
+    (interactive) 
+      (find-file "~/org/me.org") 
+ )
+(defun emacs () 
+    (interactive) 
+      (find-file "~/.emacs") 
+ )
+;;------------------------------------------------------------------------------
