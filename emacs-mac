@@ -1,0 +1,624 @@
+
+(add-to-list 'load-path "~/.emacs.d/deft")
+
+
+(winner-mode 1)
+
+;;set ibus-el
+(add-to-list 'load-path "~/.emacs.d/ibus-el-0.3.2")
+(require 'ibus)
+(add-hook 'after-init-hook 'ibus-mode-on)
+
+
+
+;(add-to-list 'load-path "~/.emacs.d")    ; This may not be appeared if you have already added.
+
+
+
+
+    
+(add-to-list 'load-path "~/.emacs.d/vendor/textmate.el")
+(add-to-list 'load-path "~/.emacs.d/vendor")
+(require 'textmate)
+(textmate-mode)
+;;;;--------------------------------------
+
+; (elpy-enable)
+
+
+;;-----------------------------------
+
+;(require 'expand-region)   
+;(global-set-key (kbd "C-=") 'er/expand-region)
+
+
+
+;;-----------------django html munamo mode---------------------------------------------------------------
+(autoload 'django-html-mumamo-mode "~/.emacs.d/nxhtml/autostart.el")
+(setq auto-mode-alist
+      (append '(("\\.html?$" . django-html-mumamo-mode)) auto-mode-alist))
+(setq mumamo-background-colors nil) 
+(add-to-list 'auto-mode-alist '("\\.html$" . django-html-mumamo-mode))
+
+;;;-------------------------------------------------------------------------------------
+
+;(add-to-list 'load-path "~/.emacs.d/python.el") 
+;(require 'python)
+
+(add-hook 'python-mode-hook 'jedi:setup)
+(setq jedi:setup-keys t)
+(setq jedi:complete-on-dot t)                 ; optional
+
+;;;;;;;------------------------------------------
+
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;
+
+;(iswitchb-mode 1)
+
+(global-set-key "\C-x\C-b" 'ibuffer)
+
+(load-theme 'tsdh-dark)
+
+
+
+
+
+;;;;;;--------------------highlight-symbol-------------------------
+(add-to-list 'load-path "~/.emacs.d/highlight-symbol.el")
+
+(require 'highlight-symbol)
+(global-set-key [(control f3)] 'highlight-symbol-at-point)
+(global-set-key [f3] 'highlight-symbol-next)
+(global-set-key [(shift f3)] 'highlight-symbol-prev)
+(global-set-key [(meta f3)] 'highlight-symbol-query-replace)
+
+
+;;;-----------markdown mode --------------
+(autoload 'markdown-mode "markdown-mode"
+   "Major mode for editing Markdown files" t)
+(add-to-list 'auto-mode-alist '("\\.text\\'" . markdown-mode))
+(add-to-list 'auto-mode-alist '("\\.markdown\\'" . markdown-mode))
+(add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode))
+
+;;;;;-------------marmalade ------------------------------------------------------------
+;(require 'package)
+;(add-to-list 'package-archives 
+;    '("marmalade" .
+;      "http://marmalade-repo.org/packages/"))
+;(package-initialize)
+;;;--------------helm --------------------------
+
+;(add-to-list 'load-path "~/.emacs.d/helm")
+;(require 'helm-config)
+;(helm-mode 1)
+
+;(global-set-key (kbd "C-c h") 'helm-mini)
+
+;;;;;;;;;;------------kill buffer no need comfirm-----------------------
+
+(global-set-key [(control x) (k)] 'kill-this-buffer)
+
+
+
+;;;;-------------O Blog-----------------------------------------------------------
+
+(add-to-list 'load-path "~/.emacs.d/o-blog")
+(require 'o-blog)
+
+
+
+;;;-------------
+;;(require 'edbi)
+
+;;;;----------yas snippet------------------------------------------------------
+(add-to-list 'load-path "~/.emacs.d/plugins/yasnippet") 
+(require 'yasnippet)
+
+(setq yas-snippet-dirs
+      '("~/.emacs.d/snippets"            ;; personal snippets
+        "~/.emacs.d/plugins/yasnippet/snippets"    ;; the default collection
+        ))
+
+(yas-global-mode 1) ;; or M-x yas-reload-all if you've started YASnippet already.
+;;;;;;--------- setup  pylookup  ------------------------------------- 
+
+;; add pylookup to your loadpath, ex) ~/.emacs.d/pylookup
+;(setq pylookup-dir "~/py/pylookup")
+;(add-to-list 'load-path pylookup-dir)
+
+;; load pylookup when compile time
+;(eval-when-compile (require 'pylookup))
+
+;; set executable file and db file
+;(setq pylookup-program (concat pylookup-dir "/pylookup.py"))
+;(Setq pylookup-db-file (concat pylookup-dir "/pylookup.db"))
+
+;;-------------------------------------------------------------
+
+;(setq x-select-enable-clipboard t)
+;(setq interprogram-paste-function 'x-cut-buffer-or-selection-value)
+
+
+;; set search option if you want
+;; (setq pylookup-search-options '("--insensitive" "0" "--desc" "0"))
+
+;; to speedup, just load it on demand
+(autoload 'pylookup-lookup "pylookup"
+  "Lookup SEARCH-TERM in the Python HTML indexes." t)
+
+(autoload 'pylookup-update "pylookup" 
+  "Run pylookup-update and create the database at `pylookup-db-file'." t)
+
+(global-set-key "\C-ch" 'pylookup-lookup)
+;;;;;;--------- setup  pylookup  end --------------------- ;;;;;;
+
+;;;;;;----------settup org2blog --------------------------------
+(setq org2blog/wp-blog-alist
+       '(("wordpress"
+          :url "http://cxmyes.wordpress.com/xmlrpc.php"
+          :username "cxmtime"
+          :default-title "Hello World"
+          :default-categories ("org2blog" "emacs")
+          :tags-as-categories nil)
+         ("my-blog"
+          :url "http://username.server.com/xmlrpc.php"
+          :username "admin")))
+
+
+;;;;;;;;;;
+(setq org-hide-emphasis-markers t)
+;;;;;;;;;-----------------------------------------------------------
+ (setq org-export-html-style-include-scripts nil
+  org-export-html-style-include-default nil)
+
+ (setq org-export-html-style
+ "<link rel=\"stylesheet\" type=\"text/css\" href=\"org-style.css\" />")
+
+;;;;;;;; take a screenshot to org --------------------------------------------------------------------------
+ (defun org-screenshot ()
+  "Take a screenshot into a time stamped unique-named file in the same directory as the org-buffer and insert a link to this file."
+  (interactive)
+  (setq tilde-buffer-filename
+	(replace-regexp-in-string "/" "\\" (buffer-file-name) t t))
+  (setq filename
+	(concat
+	 (make-temp-name
+	  (concat "d:\\emacs\\images\\"
+		  "_"
+		  (format-time-string "%Y%m%d_%H%M%S_")) ) ".png"))
+  ;; Linux: ImageMagick: (call-process "import" nil nil nil filename)
+  ;; Windows: Irfanview
+  (call-process "d:\\P\\IrfanView\\i_view32.exe" nil nil nil (concat "/clippaste /convert=" filename))
+  (insert (concat "[[file:" filename "]]"))
+  (org-display-inline-images))
+  ; open jpg files in external app
+  (add-hook 'org-mode-hook
+      '(lambda ()
+             (setq org-file-apps
+                   (append '(
+                             ("\\.png\\'" . default)
+                             ) org-file-apps ))))
+
+
+
+(global-set-key (kbd "C-c y") 'org-screenshot)
+;;;;;;;;-----------------------------------------------------------------------------------------------------
+(global-set-key (kbd "C-x w") 'toggle-truncate-lines)
+
+
+
+;;;;;;;;------------ org setting ----------------------------------------------------------------------------
+
+;(setq org-capture-templates
+;      '(("t" "Todo" entry (file+headline "~/org/gtd.org" "Tasks")
+;             "* TODO %?\n  %i\n ")
+;       ("j" "Journal" entry (file+datetree "~/org/journal.org")
+;            "* %?\nEntered on %U\n  %i\n  %a")
+;       ("l" "Link" entry ("~/org/links.org")
+;         "- %?\n %x\n")
+;))
+
+
+
+(setq org-capture-templates
+'(
+
+("w" "work notes" entry (file "~/org/work-notes.org")
+  "* \n Entered on %T\n"  :prepend t)
+("l" "life notes" entry (file "~/org/life-notes.org")
+  "* \n Entered on %T\n" :prepend t)
+("t" "Todo of work" entry (file+headline "~/org/todo.org" "Tasks")
+  "* TODO %?\n Entered on %T\n" :prepend t)
+("T" "Todo of life" entry (file+headline "~/org/gtdlife.org" "Tasks")
+  "* TODO %?\n Entered on %T\n" :prepend t)
+("o" "Operation log" entry (file+datetree+prompt "~/org/oplog.org")
+ "* %?\n----Entered on %U\n  %i\n")
+("L" "Life log" entry (file "~/org/lifelog.org")
+"* %^g\n Entered on %T\n" :prepend t)
+("m" "meeting" entry (file "~/org/meeting.org")
+"* \n Entered on %T\n" :prepend t)
+))
+
+
+
+(global-set-key (kbd "<C-f12>") 'org-capture)
+
+(setq org-default-notes-filed "~/org/mingo.org" )
+
+(setq org-agenda-files (list "~/org"))
+
+;;;;;;org 自动缩进--------
+(add-hook 'org-mode-hook
+       (lambda ()
+       (org-indent-mode t))
+              t)
+
+(add-to-list 'org-modules 'org-timer)
+(setq org-timer-default-timer 25)
+
+;Modify the org-clock-in so that a timer is started with the default
+;value except if a timer is already started :
+
+(add-hook 'org-clock-in-hook '(lambda () 
+      (if (not org-timer-current-timer) 
+      (org-timer-set-timer '(16)))))
+
+
+;;-------------------------------------------------
+
+(global-set-key (kbd "C-S-c") 'kill-ring-save)
+
+
+;;-------------------------
+
+(add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
+(add-to-list 'auto-mode-alist '("\\.notes$" . org-mode))
+
+;;;;;;;-------------------------------------------------------------------------------------------------------
+
+
+;(require 'window-numbering)
+;(window-numbering-mode 1)
+
+
+;;;;;;;-----;copy-region if region selected; else copy-line-----------------------------------------------
+
+(defun copy-line-or-region (beg end) 
+ "copy region if active only or copy line normally"
+  (interactive "r")
+  (if (region-active-p)
+      (call-interactively 'kill-ring-save)
+    (call-interactively 'copy-line)))
+
+(global-set-key (kbd "M-w") 'copy-line-or-region)
+;;;;;;----------------------------------------------------------------------------------------------------------
+;;;;;;;;;;;---- kill-other-buffers  ------------
+(defun kill-other-buffers ()
+      "Kill all other buffers."
+      (interactive)
+      (mapc 'kill-buffer (delq (current-buffer) (buffer-list))))
+
+
+;;;-----------------------------------------------------------------
+;;;;;;;;;;;;;;;;;;;;kill-region if region selected; else kill-backwad---------------------------
+(defun kill-backward-or-region (beg end) 
+ "kill region if active only or kill line normally"
+  (interactive "r")
+  (if (region-active-p)
+      (call-interactively 'kill-region)
+    (call-interactively 'backward-kill-word)))
+
+(global-set-key (kbd "C-w") 'kill-backward-or-region)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+;;;;;;;;;;;;;;;coy-line and copy word ------------------------------------------------------------
+(defun copy-line (&optional arg)
+ "Save current line into Kill-Ring without mark the line"
+ (interactive "P")
+ (let ((beg (line-beginning-position)) 
+	(end (line-end-position arg)))
+ (copy-region-as-kill beg end))
+)
+
+
+(defun copy-word (&optional arg)
+ "Copy words at point"
+ (interactive "P")
+ (let ((beg (progn (if (looking-back "[a-zA-Z0-9]" 1) (backward-word 1)) (point))) 
+	(end (progn (forward-word arg) (point))))
+ (copy-region-as-kill beg end))
+)
+;;;;;;;;--------------------------------------------------------------------------------------------
+
+;;;;;;;;;;;-----------------ido---------------------------------------------------------------
+(setq ido-enable-flex-matching t)
+  (setq ido-everywhere t)
+(ido-mode 1)
+
+;;;;;;;;;;------------------------------------------------------------------------------------
+;;;;;;;;; setup utf-8 ------------------------------------------------------------------------
+(set-language-environment 'utf-8)
+(prefer-coding-system       'utf-8)
+(set-default-coding-systems 'utf-8)
+(set-terminal-coding-system 'utf-8)
+(set-keyboard-coding-system 'utf-8)
+;; This from a japanese individual.  I hope it works.
+(setq default-buffer-file-coding-system 'utf-8)
+;; From Emacs wiki
+(setq x-select-request-type '(UTF8_STRING COMPOUND_TEXT TEXT STRING))
+;; MS Windows clipboard is UTF-16LE 
+;(set-clipboard-coding-system 'utf-16le-dos)
+
+;;;;;;;;;;; Settup English Font and Chinese Font ---------------------------------------------
+; Setting English Font
+;(set-face-attribute
+;  'default nil :font "Consolas 12")
+;   
+ ;Chinese Font
+; (dolist (charset '(kana han symbol cjk-misc bopomofo))
+ ;       (set-fontset-font (frame-parameter nil 'font)
+  ;                           charset
+   ;                         (font-spec :family "Microsoft Yahei" :size 13)))
+
+
+
+
+
+
+;;;--------Define temp register. C-. set the mark  /C-, go back ------------------------------------------------------
+(defun ska-point-to-register()
+  "Store cursorposition _fast_ in a register. 
+Use ska-jump-to-register to jump back to the stored 
+position."
+  (interactive)
+  (setq zmacs-region-stays t)
+  (point-to-register 8))
+
+(defun ska-jump-to-register()
+  "Switches between current cursorposition and position
+that was stored with ska-point-to-register."
+  (interactive)
+  (setq zmacs-region-stays t)
+  (let ((tmp (point-marker)))
+        (jump-to-register 8)
+        (set-register 8 tmp)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(setq make-backup-files nil) ; stop creating those backup~ files
+(setq auto-save-default nil) ; stop creating those #autosave# files
+
+
+
+;;;;;;;;Chine input---------------------------------------
+(global-set-key (kbd "C-SPC") nil)
+
+;;;;-------------SCIM Chinese input-----------------------
+;; Load scim-bridge.
+       ; (require 'scim-bridge)
+        ;; Turn on scim-mode automatically after loading .emacs
+       ; (add-hook 'after-init-hook 'scim-mode-on)
+        ;; Setup input status switch keystroke.
+       ; (scim-define-common-key (kbd "C-SPC") t)
+        ;; Use C-SPC for Set Mark command
+       ; (scim-define-common-key (kbd "C-SPC") nil)
+        ;; Use C-/ for Undo command
+        ;(scim-define-common-key (kbd "C-/") nil)
+        ;; Change cursor color depending on SCIM status
+        ;(setq scim-cursor-color '("red" "blue" "limegreen"))
+
+
+;;;;;;;;;;;------MISC -------------------------------------------------------------------------
+(require 'php-mode)
+(require 'recentf)
+(recentf-mode 1)
+(global-set-key "\C-x\ \C-r" 'recentf-open-files)
+
+;;  set tab
+(setq-default indent-tabs-mode nil)
+(setq-default tab-width 4)
+(setq indent-line-function 'insert-tab)
+
+
+;; make cursor movement keys under right hand's home-row.
+(global-set-key (kbd "C-h") 'backward-char) ; was indent-new-comment-line
+(global-set-key (kbd "C-l") 'forward-char)  ; was downcase-word
+(global-set-key (kbd "M-l") 'forward-char)  ; was downcase-word
+(global-set-key (kbd "M-k") 'previous-line) ; was tab-to-tab-stop
+(global-set-key (kbd "M-j") 'next-line) ; was kill-sentence
+(global-set-key (kbd "C-x C-a") 'beginning-of-buffer) ; 
+;;(global-set-key (kbd "C-x C-e") 'end-of-buffer) ; 
+
+
+(global-set-key (kbd "M-SPC") 'set-mark-command) ; was just-one-space
+;(global-set-key (kbd "M-a") 'execute-extended-command) ; was backward-sentence
+(global-set-key (kbd "<f5>") 'kmacro-end-and-call-macro)
+
+
+
+
+
+(global-set-key (kbd "<f6>") 'viper-mode)
+(global-set-key (kbd "\C-ce") 'viper-go-away)
+(global-set-key [f3] 'occur)
+
+
+(define-key global-map "\C-cl" 'org-store-link)
+(define-key global-map "\C-ca" 'org-agenda)
+(setq org-log-done t)
+(define-key global-map "\C-cc" 'org-remember)
+(define-key global-map "\C-xt" 'artist-mode)
+
+
+
+;;Font size
+(define-key global-map (kbd "C-+") 'text-scale-increase)
+(define-key global-map (kbd "C--") 'text-scale-decrease)
+;;Move around wndows
+(windmove-default-keybindings) ;; Shift+direction
+(global-set-key (kbd "C-x O") (lambda () (interactive) (other-window -1))) ;; back one
+(global-set-key (kbd "C-x C-o") (lambda () (interactive) (other-window 2))) ;; forward two
+
+
+
+ 	
+;; load auctex
+;(load "auctex.el" nil t t)
+;(load "preview-latex.el" nil t t)
+
+
+;;; setup tramp
+(setq tramp-default-method "ssh")
+
+
+;;
+
+(add-to-list 'load-path "~/.emacs.d/bongo")
+(autoload 'bongo "bongo"
+  "Start Bongo by switching to a Bongo buffer." t)
+
+;;;---------------------------
+(require 'deft)
+(setq deft-directory "~/org")
+(setq deft-extension "org")
+(setq deft-text-mode 'org-mode)
+(setq deft-use-filename-as-title t)
+(global-set-key [f12] 'deft)
+
+
+
+(setq server-socket-dir "/tmp/emacs1000")
+(server-start)
+
+
+;;------------------eval buffer of ruby, python .... -----
+
+(load "/Users/mingo/.emacs.d/vendor/eval-buffer.el")    
+
+(global-set-key (kbd "<f9>") 'jw-eval-buffer)
+
+
+;;;;;;;;;;;--------------------------------------------------------------------------------------
+
+(defun todo () 
+      (interactive) 
+      (find-file "d:/emacs/todo.org") 
+ )
+(defun note () 
+    (interactive) 
+      (find-file "~/note/notes.org") 
+ )
+(defun mingo () 
+    (interactive) 
+      (find-file "d:/emacs/lisp/mingo.el") 
+ )
+(defun gtd () 
+    (interactive) 
+      (find-file "d:/emacs/gtd.org") 
+ )
+
+(defun site () 
+    (interactive) 
+      (find-file "d:/emacs/sites.org") 
+ )
+(defun me () 
+    (interactive) 
+      (find-file "d:/emacs/me.org") 
+ )
+(defun emacs () 
+    (interactive) 
+      (find-file "c:/Users/c40920/AppData/Roaming/.emacs") 
+ )
+;;------------------------------------------------------------------------------
+
+
+
+(defun cxmhehe ()
+  (interactive)
+  (while (re-search-forward "FirstName='\\([^']+\\)'[ ]+LastName='\\([^']+\\)'" nil t 1)
+    (message "%s %s" (match-string-no-properties 1) (match-string-no-properties 2) )))
+
+
+    
+(set-frame-font "Menlo-16")
+(set-fontset-font
+    (frame-parameter nil 'font)
+    'han
+    (font-spec :family "Hiragino Sans GB" ))
+
+;(set-default-font "Monaco 16")
+
+(setq confirm-nonexistent-file-or-buffer nil)
+(setq ido-create-new-buffer 'always)
+
+(require 'dpaste nil)
+
+(defun eshell-here ()
+  "Opens up a new shell in the directory associated with the current buffer's file."
+  (interactive)
+  (let* ((parent (if (buffer-file-name)
+                     (file-name-directory (buffer-file-name))
+                   default-directory))
+         (name (car (last (split-string parent "/" t)))))
+    (split-window-vertically)
+    (other-window 1)
+    (eshell "new")
+    (rename-buffer (concat "*eshell: " name "*"))
+
+    (insert (concat "ls"))
+    (eshell-send-input)))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(transient-mark-mode 1) ; highlight text selection
+
+;;google translate
+(add-to-list 'load-path "~/.emacs.d/vendor/google-translate")
+(require 'google-translate)
+(require 'google-translate-default-ui)
+(global-set-key "\C-ct" 'google-translate-at-point)
+(global-set-key "\C-cT" 'google-translate-query-translate)
+
+(setq ediff-split-window-function 'split-window-horizontally)
+
+;(require 'smart-tab)
+;(global-smart-tab-mode 1)
+
+
+(require 'package) ;; You might already have this line
+(add-to-list 'package-archives
+             '("melpa" . "http://melpa.org/packages/") t)
+(when (< emacs-major-version 24)
+  ;; For important compatibility libraries like cl-lib
+  (add-to-list 'package-archives '("gnu" . "http://elpa.gnu.org/packages/")))
+(package-initialize) ;; You might already have this line
+
+
+;;;;;
+(require 'dired-details)
+(dired-details-install)
+;;;
+
+(require 'misc)
+(define-key global-map (kbd "M-f") 'forward-to-word)
+(define-key global-map (kbd "M-b") 'backward-to-word)
+
+
+
+
+    
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(markdown-command "pandoc -f markdown -t html"))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
