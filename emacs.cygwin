@@ -1,37 +1,94 @@
 
+
+;; Added by Package.el.  This must come before configurations of
+;; installed packages.  Don't delete this line.  If you don't want it,
+;; just comment it out by adding a semicolon to the start of the line.
+;; You may delete these explanatory comments.
+
+
+(require 'package)
+(let* ((no-ssl (and (memq system-type '(windows-nt ms-dos))
+                    (not (gnutls-available-p))))
+       (proto (if no-ssl "http" "https")))
+  (when no-ssl
+    (warn "\
+Your version of Emacs does not support SSL connections,
+which is unsafe because it allows man-in-the-middle attacks.
+There are two things you can do about this warning:
+1. Install an Emacs version that does support SSL and be safe.
+2. Remove this warning from your init file so you won't see it again."))
+  ;; Comment/uncomment these two lines to enable/disable MELPA and MELPA Stable as desired
+  (add-to-list 'package-archives (cons "melpa" (concat proto "://melpa.org/packages/")) t)
+  ;;(add-to-list 'package-archives (cons "melpa-stable" (concat proto "://stable.melpa.org/packages/")) t)
+  (when (< emacs-major-version 24)
+    ;; For important compatibility libraries like cl-lib
+    (add-to-list 'package-archives (cons "gnu" (concat proto "://elpa.gnu.org/packages/")))))
+
+
+(package-initialize)
+
+
+
+
+
 (add-to-list 'load-path "~/.emacs.d/el-get/el-get")
 (add-to-list 'load-path "~/.emacs.d/expand-region.el")
 
-
-
-(unless (require 'el-get nil 'noerror)
-  (with-current-buffer
-      (url-retrieve-synchronously
-       "https://raw.github.com/dimitri/el-get/master/el-get-install.el")
-    (let (el-get-master-branch)
-      (goto-char (point-max))
-      (eval-print-last-sexp))))
-
-(el-get 'sync)
+(add-to-list 'load-path "~/.emacs.d/other-lisp")
+(add-to-list 'load-path "~/.emacs.d/vendor")
+(add-to-list 'load-path "~/.emacs.d/vendor/google-translate")
+(add-to-list 'load-path "~/.emacs.d/vendor/google-translate-mode")
 
 
 
-(add-to-list 'load-path "~/.emacs.d")    ; This may not be appeared if you have already added.
-
- (setq make-backup-files nil) 
-
-(prefer-coding-system 'utf-8)
 
 
-(add-to-list 'load-path "~/.emacs.d/Enhanced-Ruby-Mode") ; must be added after any path containing old ruby-mode
-(autoload 'enh-ruby-mode "enh-ruby-mode" "Major mode for ruby files" t)
-(add-to-list 'auto-mode-alist '("\\.rb$" . enh-ruby-mode))
-(add-to-list 'interpreter-mode-alist '("ruby" . enh-ruby-mode))
 
- (eval-after-load 'enh-ruby-mode
-                     '(define-key enh-ruby-mode-map (kbd "C-c n") 'enh-ruby-end-of-block))
- (eval-after-load 'enh-ruby-mode
-                     '(define-key enh-ruby-mode-map (kbd "C-c p") 'enh-ruby-beginning-of-block))
+;; add the leuven theme
+(add-to-list 'custom-theme-load-path " ~/.emacs.d/vendor/emacs-leuven-theme")
+(load-theme 'leuven t)
+(setq leuven-scale-outline-headlines nil)
+;(set-face-attribute 'org-agenda-date nil :height 90) ; 9 pt font.
+;; Fontify the whole line for headings (with a background color).
+(setq org-fontify-whole-heading-line t)
+
+;(unless (require 'el-get nil 'noerror)
+;  (with-current-buffer
+;      (url-retrieve-synchronously
+;       "https://raw.github.com/dimitri/el-get/master/el-get-install.el")
+;    (let (el-get-master-branch)
+;      (goto-char (point-max))
+;      (eval-print-last-sexp))))
+
+;(el-get 'sync)
+
+
+
+(setq org-src-fontify-natively t)
+
+(setq org-startup-with-inline-images t)
+;; backup;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(setq backup-directory-alist `(("." . "~/.emacs_saves")))
+
+
+;(setq make-backup-files nil) 
+
+;; UTF-8 as default encoding
+(set-language-environment "UTF-8")
+
+;(prefer-coding-system 'utf-8)
+
+
+;(add-to-list 'load-path "~/.emacs.d/Enhanced-Ruby-Mode") ; must be added after any path containing old ruby-mode
+;(autoload 'enh-ruby-mode "enh-ruby-mode" "Major mode for ruby files" t)
+;(add-to-list 'auto-mode-alist '("\\.rb$" . enh-ruby-mode))
+;(add-to-list 'interpreter-mode-alist '("ruby" . enh-ruby-mode))
+
+; (eval-after-load 'enh-ruby-mode
+;                     '(define-key enh-ruby-mode-map (kbd "C-c n") 'enh-ruby-end-of-block))
+; (eval-after-load 'enh-ruby-mode
+;                     '(define-key enh-ruby-mode-map (kbd "C-c p") 'enh-ruby-beginning-of-block))
 
 
 
@@ -40,14 +97,14 @@
 ;(add-hook 'enh-ruby-mode-hook 'inf-ruby-minor-mode)
 
 ;;;--------magit-----------
-(add-to-list 'load-path "~/.emacs.d/vendor/git-modes-0.15.0")
-(add-to-list 'load-path "~/.emacs.d/vendor/magit")
-(eval-after-load 'info
-  '(progn (info-initialize)
-          (add-to-list 'Info-directory-list "~/.emacs.d/vendor/magit")))
-(require 'magit)
+;(add-to-list 'load-path "~/.emacs.d/vendor/git-modes-0.15.0")
 
-(global-set-key (kbd "C-c g") 'magit-status)
+;(eval-after-load 'info
+;  '(progn (info-initialize)
+;          (add-to-list 'Info-directory-list "~/.emacs.d/vendor/magit")))
+;(require 'magit)
+
+;(global-set-key (kbd "C-c g") 'magit-status)
 
 
 ;; ------------------- jedi -----------------------------------------------------
@@ -59,15 +116,15 @@
 ;(require 'python)
 
 ;;;;----------yas snippet------------------------------------------------------
-(add-to-list 'load-path "~/.emacs.d/plugins/yasnippet") 
-(require 'yasnippet)
+;(add-to-list 'load-path "~/.emacs.d/plugins/yasnippet") 
+;(require 'yasnippet)
 
-(setq yas-snippet-dirs
-      '("~/.emacs.d/snippets"            ;; personal snippets
-        "~/.emacs.d/plugins/yasnippet/snippets"    ;; the default collection
-        ))
+;(setq yas-snippet-dirs
+;      '("~/.emacs.d/snippets"            ;; personal snippets
+;        "~/.emacs.d/plugins/yasnippet/snippets"    ;; the default collection
+;        ))
 
-(yas-global-mode 1) ;; or M-x yas-reload-all if you've started YASnippet already.
+;(yas-global-mode 1) ;; or M-x yas-reload-all if you've started YASnippet already.
 ;;;;;;--------- setup  pylookup  ------------------------------------- 
 
 ;; add pylookup to your loadpath, ex) ~/.emacs.d/pylookup
@@ -110,7 +167,7 @@
 ;;;;;;;;;-----------------------------------------------------------
 
 
-(setq org-agenda-files '("~/org"))
+;(setq org-agenda-files '("~/org"))
 
 
 ;;;;;;;; take a screenshot to org --------------------------------------------------------------------------
@@ -143,6 +200,50 @@
 (global-set-key (kbd "C-c y") 'org-screenshot)
 ;;;;;;;;-----------------------------------------------------------------------------------------------------
 
+
+;;
+;; My Function for Screenshots
+;; http://www.sastibe.de/2018/11/take-screenshots-straight-into-org-files-in-emacs-on-win10/
+
+(defun my-org-screenshot ()
+  "Take a screenshot into a time stamped unique-named file in the
+same directory as the org-buffer and insert a link to this file."
+  (interactive)
+
+  (setq filename_inline
+        (concat "./media/"
+         (make-temp-name
+          (concat (buffer-name)
+                  "_"
+                  (format-time-string "%Y%m%d_%H%M%S_")) ) ".png"))
+
+
+  (setq filename
+       (concat default-directory filename_inline))
+
+
+
+
+  (setq filename_win
+  (substring 
+    (shell-command-to-string (concat "cygpath -w " filename) ) 
+   0 -1))
+  
+   ;(shell-command "snippingtool /clip")
+
+   (setq save_cmd
+	(format "powershell -command '$img = get-clipboard -format image; $img.save(\"%s\")'" filename_win)
+   )
+
+  (shell-command save_cmd)
+  (insert (concat "[[file:" filename_inline"]]"))
+  (org-display-inline-images))
+
+(global-set-key "\C-cs" 'my-org-screenshot)
+
+
+
+
 ;;;;;;;;------------ org setting ----------------------------------------------------------------------------
 
 ;(setq org-capture-templates
@@ -156,25 +257,29 @@
 (setq org-capture-templates
 '(
 
-("n" "Note of work" entry (file "~/org/noteswork.org")
+("w" "work notes" entry (file "~/org/work-notes.org")
   "* \n Entered on %T\n"  :prepend t)
-("N" "Note of Life" entry (file "~/org/noteslife.org")
+("l" "life notes" entry (file "~/org/life-notes.org")
   "* \n Entered on %T\n" :prepend t)
-("t" "Todo of work" entry (file+headline "~/org/gtdwork.org" "Tasks")
+("t" "Todo of work" entry (file+headline "~/org/todo.org" "Tasks")
   "* TODO %?\n Entered on %T\n" :prepend t)
 ("T" "Todo of life" entry (file+headline "~/org/gtdlife.org" "Tasks")
   "* TODO %?\n Entered on %T\n" :prepend t)
-("o" "Operation log" entry (file "~/org/oplog.org")
-"* \n Entered on %T\n" :prepend t)
-("l" "Life log" entry (file "~/org/lifglog.org")
+("o" "Operation log" entry (file+datetree+prompt "~/org/oplog.org") 
+ "* %?\n----Entered on %U\n  %i\n")
+("L" "Life log" entry (file "~/org/lifelog.org")
 "* %^g\n Entered on %T\n" :prepend t)
 ("m" "meeting" entry (file "~/org/meeting.org")
 "* \n Entered on %T\n" :prepend t)
 ))
 
-(global-set-key (kbd "<f12>") 'org-capture)
+(global-set-key (kbd "<C-f12>") 'org-capture)
+(global-set-key [f8] 'org-todo-list)
+
+;(global-set-key (kbd "<C-f8>") 'org-todo-list)
 
 (setq org-default-notes-filed "~/org/defaultnote.org" )
+
 
 
 ;;;;;;org 自动缩进--------
@@ -191,10 +296,11 @@
 
 (require 'deft)
 (setq deft-directory "~/org")
-(setq deft-extension "org")
+(setq deft-extensions '("org" "md"))
 (setq deft-text-mode 'org-mode)
 (setq deft-use-filename-as-title t)
-(global-set-key [f8] 'deft)
+(global-set-key [f12] 'deft)
+(global-set-key (kbd "C-x C-g") 'deft-find-file)
 
 ;;;;;;;-----;copy-region if region selected; else copy-line-----------------------------------------------
 
@@ -273,8 +379,8 @@ This command will also put the text in register 0. (see: `copy-to-register')"
 (global-set-key (kbd "<f5>") 'call-last-kbd-macro)
 
 ;;;;;;;;;;;-----------------ido---------------------------------------------------------------
-(setq ido-enable-flex-matching t)
-  (setq ido-everywhere t)
+;(setq ido-enable-flex-matching t)
+;  (setq ido-everywhere t)
 (ido-mode 1)
 ;;;;;;;;;;------------------------------------------------------------------------------------
 ;;;;;;;;; setup utf-8 ------------------------------------------------------------------------
@@ -328,9 +434,9 @@ This command will also put the text in register 0. (see: `copy-to-register')"
 
 
 ;;  set tab
-(setq-default indent-tabs-mode nil)
-(setq-default tab-width 4)
-(setq indent-line-function 'insert-tab)
+;(setq-default indent-tabs-mode nil)
+;(setq-default tab-width 4)
+;(setq indent-line-function 'insert-tab)
 
 
 ;; make cursor movement keys under right hand's home-row.
@@ -360,7 +466,7 @@ This command will also put the text in register 0. (see: `copy-to-register')"
 (define-key global-map "\C-ca" 'org-agenda)
 (setq org-log-done t)
 (define-key global-map "\C-cc" 'org-remember)
-(define-key global-map "\C-xt" 'artist-mode)
+;(define-key global-map "\C-xt" 'artist-mode)
 ;;Font size
 (define-key global-map (kbd "C-+") 'text-scale-increase)
 (define-key global-map (kbd "C--") 'text-scale-decrease)
@@ -372,10 +478,9 @@ This command will also put the text in register 0. (see: `copy-to-register')"
 ;;; setup tramp
 (require 'tramp)
 (setq tramp-default-method "ssh")
+(setq tramp-auto-save-directory "~/.emacs.d/tramp-autosave")
 
-(server-start)
 
-;;----------------------
 
 (require 'expand-region)
 (global-set-key (kbd "C-=") 'er/expand-region)
@@ -421,3 +526,191 @@ This command will also put the text in register 0. (see: `copy-to-register')"
       (find-file "~/.emacs") 
  )
 ;;------------------------------------------------------------------------------
+
+;; the appointment notification facility
+;(setq
+;  appt-message-warning-time 15 ;; warn 15 min in advance
+;
+;  appt-display-mode-line t     ;; show in the modeline
+;  appt-display-format 'window) ;; use our func
+;(appt-activate 1)              ;; active appt (appointment notification)
+;(display-time)                 ;; time display is required for this...
+;
+; ;; update appt each time agenda opened
+;
+;(add-hook 'org-finalize-agenda-hook 'org-agenda-to-appt)
+;
+;;; our little façade-function for djcb-popup
+; (defun djcb-appt-display (min-to-app new-time msg)
+;    (djcb-popup (format "Appointment in %s minute(s)" min-to-app) msg 
+;      "/usr/share/icons/gnome/32x32/status/appointment-soon.png"
+;
+;      "/usr/share/sounds/ubuntu/stereo/phone-incoming-call.ogg"))
+;  (setq appt-disp-window-function (function djcb-appt-display))
+;
+;;;--------------------------------------------------------------------
+
+(global-set-key (kbd "C-x j") 'just-one-space) ;  just-one-space
+
+(setq 
+  bookmark-default-file "~/.emacs.d/bookmarks" ;; keep my ~/ clean
+  bookmark-save-flag 0)                        ;; autosave each change)
+
+
+(require 'misc)
+(define-key global-map (kbd "M-f") 'forward-to-word)
+(define-key global-map (kbd "M-b") 'backward-to-word)
+
+;;------------------eval buffer of ruby, python .... -----
+
+(load "~/.emacs.d/eval-buffer.el")
+
+(global-set-key (kbd "<f9>") 'jw-eval-buffer)
+;-------------------------------------------------
+
+(add-to-list 'load-path "~/.emacs.d/vendor/find-temp-file")
+(require 'find-temp-file)					;
+
+(setq find-temp-file-directory "~/drafts")
+;(setq find-temp-template-default "%D/%N-%U.%E")
+			;(setq find-temp-template-default "%D/%N-%S.%E")
+(setq find-temp-template-default "%N-%S.%E")
+;(setq find-temp-template-default "%N-%U.%E")
+					;(setq find-temp-template-default "%N.%E")
+;(setq find-temp-template-default "%M/%D/%N-%U.%E")
+(define-key global-map (kbd "C-x C-t") 'find-temp-file)
+
+
+;;-----------------------
+
+(add-hook 'dired-mode-hook 'dired-hide-details-mode)   ; auto hide detail in dired mode
+    
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(buffer-face-mode-face '(:background "light gray"))
+ '(epg-gpg-program "/usr/bin/gpg2")
+ '(package-selected-packages '(treemacs org-alert epc)))
+
+    (add-hook 'dired-mode-hook 'buffer-face-mode) 
+
+
+;;
+;; open org-agenda at startup
+(setq inhibit-splash-screen t)
+(org-agenda nil "n")
+(delete-other-windows)
+
+;; open org-agenda on timer  http://jmdeldin.com/posts/2015/emacs-cron/
+(defun open-org-agenda ()
+  "show the org agenda"
+;  (interactive)
+  (org-agenda nil "n")
+  )
+
+;; assign your timer to a variable. this is important -- without this,
+;; you will be unable to easily cancel your timer
+;(setq my-timer (run-with-idle-timer 3600 t 'open-org-agenda))
+;(setq my-timer (run-with-timer 0 3600 'open-org-agenda))
+
+;; 4 hours (14,400 seconds) too soon? cancel it:
+; (cancel-timer my-timer)
+
+;(global-set-key [f10] 'org-agenda)
+
+(setq org-src-fontify-natively t)
+
+;;
+ (require 'yaml-mode)
+(add-to-list 'auto-mode-alist '("\\.yml\\'" . yaml-mode))
+(add-hook 'yaml-mode-hook
+      '(lambda ()
+        (define-key yaml-mode-map "\C-m" 'newline-and-indent)))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(default ((t (:family "Courier New" :foundry "outline" :slant normal :weight normal :height 120 :width normal)))))
+;; helm and helm-org-rifile
+;; If async is installed
+(add-to-list 'load-path "~/.emacs.d/vendor/emacs-async")
+
+(add-to-list 'load-path "~/.emacs.d/vendor/helm")
+(require 'helm-config)
+
+(add-to-list 'load-path "~/.emacs.d/vendor/dash.el")
+(add-to-list 'load-path "~/.emacs.d/vendor/f.el")
+(add-to-list 'load-path "~/.emacs.d/vendor/s.el")
+(add-to-list 'load-path "~/.emacs.d/vendor/helm-org-rifle")
+
+(require 'helm-org-rifle)
+(global-set-key [f10] 'helm-org-rifle-org-directory)
+(global-set-key (kbd "<C-f10>") 'helm-org-rifle)
+;; helm and helm-org-rifile end
+
+;; Start eshell or switch to it if it's active.
+(global-set-key (kbd "C-x m") 'eshell)
+
+;;window move
+(windmove-default-keybindings)
+
+;(global-set-key (kbd "C-x left") 'window-left)
+
+(global-set-key  (kbd "C-x <left>")  'windmove-left)          ; move to left window
+(global-set-key  (kbd "C-x <right>") 'windmove-right)        ; move to right window
+(global-set-key (kbd "C-x <up>")    'windmove-up)              ; move to upper window
+(global-set-key (kbd "C-x <down>")  'windmove-down)          ; move to lower window
+
+
+;; server start
+(require 'server)
+ (and (>= emacs-major-version 23)
+     (defun server-ensure-safe-dir (dir) "Noop" t))
+
+(server-start)
+
+(setq vc-handled-backends nil)
+
+;;-----------------------------------------------------------------
+;; auto save 
+ (require 'real-auto-save)
+(add-hook 'prog-mode-hook 'real-auto-save-mode)
+(add-hook 'text-mode 'real-auto-save-mode)
+(add-hook 'org-mode 'real-auto-save-mode)
+
+ (setq real-auto-save-interval 120) ;; in seconds
+
+; GnuPG 
+(require 'epa-file)
+
+(epa-file-enable)
+
+;(setq epa-file-cache-passphrase-for-symmetric-encryption t)
+
+; setup ccrypt for encryption
+;(setq load-path (cons "path" load-path))
+(require 'ps-ccrypt "ps-ccrypt.el")
+
+;(require 'google-translate)
+;(require 'google-translate-smooth-ui)
+;(global-set-key "\C-ct" 'google-translate-smooth-translate)
+;(setq google-translate-translation-directions-alist '(("de" . "en")))
+;
+
+
+(require 'google-translate)
+(require 'google-translate-default-ui)
+(global-set-key "\C-t" 'google-translate-at-point)
+(global-set-key "\C-cT" 'google-translate-query-translate)
+
+
+(require 'google-translate-mode)
+;(custom-set-variables '(google-translate-mode-idle-wait-time 0.4))
+
+(setq google-translate-default-source-language "German")
+(setq google-translate-default-target-language "English")
+
+

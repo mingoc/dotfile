@@ -5,6 +5,12 @@
 ;  space means space bar
 
 
+
+; run the umlaut.ahk
+Run "C:\dotfiles\umlaut.ahk"
+
+
+
 ; 
 ; Must configure 1. In QQ input config, set Ctrl+9 to QQ input; 2. In windows language hot key, set Ctrl +9 to QQ input; Ctrl + shift + 8 to English input
 ; in windows, Languge-> Administrative language setting -> copy setting -> Check the welcome screen ... and New user accounts.
@@ -153,6 +159,11 @@ return
 ;WinWait,, Seek
 ;Sleep, 1000
 ;ControlSend, ,{Raw}1!vp@n95{Enter}, ahk_exe notepad.exe
+
+
+
+
+
 
 
 
