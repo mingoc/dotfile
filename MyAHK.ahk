@@ -7,7 +7,7 @@
 
 
 ; run the umlaut.ahk
-Run "C:\dotfiles\umlaut.ahk"
+;Run ".\umlaut.ahk"
 
 
 
@@ -160,8 +160,17 @@ return
 ;Sleep, 1000
 ;ControlSend, ,{Raw}1!vp@n95{Enter}, ahk_exe notepad.exe
 
+;
+; switch the display
+; https://superuser.com/questions/1162680/is-there-a-windows-10-hotkey-or-shortcut-for-switching-to-a-specific-display#:~:text=Ctrl%2BPgUp%20for%20PC%20screen,PgDn%20for%20the%20second%20screen.
 
+#PgUp::
+Run, C:\Windows\System32\DisplaySwitch.exe /internal
+return
 
+#PgDn::
+Run, C:\Windows\System32\DisplaySwitch.exe /external
+return
 
 
 
