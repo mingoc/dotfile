@@ -77,6 +77,17 @@ else
   return
 }
 
+;;;;;;;;;;;;;;;; lauch snipping tool
+
+!p::
+
+ run, %windir%\system32\SnippingTool.exe
+ return
+
+;;;;;;;;;;;;;;;; 
+
+
+
 ^i::
 SetTitleMatchMode, 2
 WinActivate, Kindle PC
